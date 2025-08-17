@@ -1,0 +1,28 @@
+datasource db {
+  provider = "postgresql" // or "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Summary {
+  id            Int         @id @default(autoincrement())
+  original_text String
+  prompt        String
+  summary_text  String
+  share_token   String      @unique
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  recipients    Recipient[]
+}
+
+model Recipient {
+  id         Int      @id @default(autoincrement())
+  summary    Summary  @relation(fields: [summary_id], references: [id])
+  summary_id Int
+  email      String
+  status     String
+  sent_at    DateTime?
+}
