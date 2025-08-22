@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function PUT(
   req: Request,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = await params;
     const { summary_text } = await req.json();
 
     if (!summary_text) {
@@ -23,6 +23,9 @@ export async function PUT(
 
     return NextResponse.json({ ok: true });
   } catch (e) {
-    return NextResponse.json({ error: "Update failed" + e}, { status: 500 });
+    return NextResponse.json(
+      { error: "Update failed: " + (e as Error).message },
+      { status: 500 }
+    );
   }
 }
